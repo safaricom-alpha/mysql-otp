@@ -1,5 +1,5 @@
 %% MySQL/OTP – MySQL client library for Erlang/OTP
-%% Copyright (C) 2014-2015 Viktor Söderqvist,
+%% Copyright (C) 2014-2018 Viktor Söderqvist,
 %%               2016 Johan Lövdahl
 %%               2017 Piotr Nosek, Michal Slaski
 %%
@@ -51,6 +51,12 @@
 %% Errors that cause "implicit rollback"
 -define(ERROR_LOCK_WAIT_TIMEOUT, 1205).
 -define(ERROR_DEADLOCK, 1213).
+
+%% get_stacktrace was deprecated in OTP 21.0 (when the catch C:E:T syntax was
+%% added) but get_stacktrace is needed in all previous OTP versions.
+-ifdef(OTP_RELEASE).
+-compile({nowarn_deprecated_function, [{erlang, get_stacktrace, 0}]}).
+-endif.
 
 %% A connection is a ServerRef as in gen_server:call/2,3.
 -type connection() :: Name :: atom() |
