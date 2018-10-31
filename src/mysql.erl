@@ -518,9 +518,12 @@ init(Opts) ->
                                       Socket0, SetFoundRows),
     case Result of
         {ok, Handshake, SockMod, Socket} ->
-            SockMod:setopts(Socket, [{active, once}]),
-            #handshake{server_version = Version, connection_id = ConnId,
+            #handshake{server_version = Version,
                        status = Status} = Handshake,
+            {ok, [#resultset{rows = [[ConnId]]}]} = mysql_protocol:query(<<"SELECT CONNECTION_ID()">>,
+                                                                         SockMod, Socket,
+                                                                         ?cmd_timeout),
+            SockMod:setopts(Socket, [{active, once}]),
             State = #state{server_version = Version, connection_id = ConnId,
                            sockmod = SockMod,
                            socket = Socket,
